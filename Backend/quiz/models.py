@@ -16,12 +16,12 @@ class Quiz(models.Model):
         return self.questions_count()
     
     class Meta:
-        verbase_name = _("Quiz")
+        verbose_name = _("Quiz")
         verbose_name_plural = _("Quizzes")
         ordering = ['id']
 
 
-class Questions(models.Model):
+class Question(models.Model):
     
     quiz = models.ForeignKey(
         Quiz, related_name='questions', on_delete=models.CASCADE
@@ -41,7 +41,7 @@ class Questions(models.Model):
         
 class Answer(models.Model):
     question = models.ForeignKey(
-        Questions, related_name='answers ', on_delete=models.CASCADE
+        Question, related_name='answers', on_delete=models.CASCADE
     )
     answer = models.CharField(max_length=255, null=True, blank=True)
     is_right = models.BooleanField(default=False, null=True, blank=True)
@@ -54,4 +54,4 @@ class Answer(models.Model):
         ordering = ['id']
         
     def __str__(self):
-        return self.answer_text
+        return self.answer
