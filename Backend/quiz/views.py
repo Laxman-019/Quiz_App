@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Count
 from rest_framework import generics, status
 from rest_framework.response import Response
 from .models import Quiz, Question
@@ -9,12 +10,14 @@ from django.http import Http404
 # Create your views here.
 
 class ListCreateQuiz(generics.ListCreateAPIView):
-    queryset = Quiz.objects.all()
+    # Annotate the queryset to get question count efficiently
+    queryset = Quiz.objects.annotate(question_count=Count('questions')).all()
     serializer_class = QuizSerializer
 
 
 class RetriveUpdateDestroyQuiz(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Quiz.objects.all()
+    # Annotate the queryset to get question count efficiently
+    queryset = Quiz.objects.annotate(question_count=Count('questions')).all()
     serializer_class = QuizSerializer
     lookup_url_kwarg = "quiz_id"
 
@@ -37,6 +40,7 @@ class QuizQuestion(APIView):
                 {"message": "Question created successfully", "data": serializer.data},
                 status= status.HTTP_201_CREATED
             )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 
 class QuizQuestionDetail(APIView):

@@ -4,11 +4,10 @@ from .models import Quiz, Question, Answer
 
 class QuizSerializer(serializers.ModelSerializer):
 
-    question_count = serializers.SerializerMethodField("get_question_count")
-
+    question_count = serializers.SerializerMethodField()
 
     class Meta:
-        model= Quiz
+        model = Quiz
         fields = [
             "id",
             "title",
@@ -17,8 +16,9 @@ class QuizSerializer(serializers.ModelSerializer):
         ]
 
     def get_question_count(self, obj):
-        return obj.question_count
-    
+        # Use the correct related_name='questions' from your model
+        return obj.questions.count()
+
 
 class AnswerSerializer(serializers.ModelSerializer):
 
@@ -26,7 +26,7 @@ class AnswerSerializer(serializers.ModelSerializer):
         model = Answer
         fields = [
             "id",
-            "answer_text",
+            "answer",  # Changed from "answer_text" to "answer" to match your model
             "is_right"
         ]
 
@@ -60,7 +60,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         
         # Update the associated answers
         answers_data = validated_data.pop("answers", [])
-        instance.answers.all().delete() # Deleting existing answers
+        instance.answers.all().delete()  # Deleting existing answers
         for answer_data in answers_data:
             Answer.objects.create(question=instance, **answer_data)
 
