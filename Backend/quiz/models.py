@@ -11,12 +11,6 @@ class Quiz(models.Model):
     
     created_at = models.DateTimeField(auto_now_add=True)
     
-    # FIX THIS - It's calling itself recursively
-    # @property
-    # def questions_count(self):
-    #     return self.questions_count()  # This causes infinite recursion
-    
-    # Change it to:
     @property
     def questions_count(self):
         return self.questions.count()

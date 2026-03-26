@@ -1,14 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import { ToastProvider } from "./components/Toast";
+import Home from "./pages/Home";
+import CreateQuiz from "./pages/CreateQuiz";
+import QuizDetail from "./pages/QuizDetail";
+import TakeQuiz from "./pages/TakeQuiz";
+import "./index.css";
 
-function App() {
-
+export default function App() {
   return (
-    <>
-      <h1 className='text-5xl text-red-700 text-center mt-8'>Quiz Master</h1>
-    </>
-  )
-}
+    <BrowserRouter>
+      <ToastProvider>
+        <Routes>
+          <Route path="/quiz/:quizId/play" element={<TakeQuiz />} />
 
-export default App
+          <Route
+            path="*"
+            element={
+              <>
+                <Navbar />
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/create" element={<CreateQuiz />} />
+                  <Route path="/quiz/:quizId" element={<QuizDetail />} />
+                  <Route path="/quiz/:quizId/edit" element={<CreateQuiz />} />
+                </Routes>
+              </>
+            }
+          />
+        </Routes>
+      </ToastProvider>
+    </BrowserRouter>
+  );
+}
